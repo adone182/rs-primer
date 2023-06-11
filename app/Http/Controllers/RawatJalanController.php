@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\RawatJalan;
+use Illuminate\Http\Request;
+
 use App\Http\Requests\StoreRawatJalanRequest;
 use App\Http\Requests\UpdateRawatJalanRequest;
 

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Lahir;
+use Illuminate\Http\Request;
+
 use App\Http\Requests\StoreLahirRequest;
 use App\Http\Requests\UpdateLahirRequest;
 

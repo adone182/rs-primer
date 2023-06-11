@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('lahirs', function (Blueprint $table) {
             $table->id();
+            $table->string('ktp');
+            $table->string('kk');
             $table->timestamps();
         });
     }

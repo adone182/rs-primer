@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Imunisasi;
+use Illuminate\Http\Request;
+
 use App\Http\Requests\StoreImunisasiRequest;
 use App\Http\Requests\UpdateImunisasiRequest;
 
@@ -14,7 +16,7 @@ class ImunisasiController extends Controller
     public function index()
     {
         return view('Surat.Imunisasi.index', [
-            'imunisasi' => Imunisasi::all()
+            'imunisasis' => Imunisasi::all()
         ]);
     }
 

@@ -3,7 +3,7 @@
 
 @section('content')
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-    <h1 class="h2">DAFTAR PENGAJUAN SURAT VAKSIN</h1>
+    <h1 class="h2">DAFTAR PENGAJUAN SURAT VISUM</h1>
 </div>
 
 @if (session()->has('success'))
@@ -15,22 +15,24 @@
 
 {{-- table --}}
 <div class="table-responsive col-lg-8">
-    <a href="/home/vaksin/create" class="btn btn-primary mb-3">BUAT PENGAJUAN VAKSIN</a>
+    <a href="/home/visum/create" class="btn btn-primary mb-3">BUAT PENGAJUAN VISUM</a>
     <table class="table table-striped table-sm">
         <thead>
             <tr>
                 <th scope="col">NO</th>
                 <th scope="col">KTP(Kartu Tanda Penduduk)</th>
                 <th scope="col">KK(Kartu Keluarga)</th>
+                <th scope="col">SKCK(SURAT KETERANGAN CATATAN KEPOLISIAN)</th>
                 {{-- <th scope="col">Action</th> --}}
             </tr>
         </thead>
         <tbody>
-            @foreach ($vaksins as $vaksin)
+            @foreach ($visums as $visum)
                 <tr>
-                    <td>{{ $vaksin->id }}</td>
-                    <td>{{ $vaksin->ktp}}</td>
-                    <td>{{ $vaksin->kk}}</td>
+                    <td>{{ $visum->id }}</td>
+                    <td>{{ $visum->ktp}}</td>
+                    <td>{{ $visum->kk}}</td>
+                    <td>{{ $visum->skck}}</td>
                     {{-- <td>
                         <a href="/dashboard/posts/{{ $post->slug }}" class="badge bg-info text-decoration-none"><span
                                 data-feather="eye"></span> Show</a>

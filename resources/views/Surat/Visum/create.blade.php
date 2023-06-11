@@ -3,14 +3,14 @@
 
 @section('content')
 <div class="d-flex justify-content-center flex-wrap flex-md-nowrap align-items-center pt-0 pb-0 mb-5 border-bottom mt-5">
-        <h1 class="h2">FORM PENGAJUAN SURAT VAKSIN</h1>
+        <h1 class="h2">FORM PENGAJUAN SURAT VISUM</h1>
     </div>
 
     {{-- form create posts --}}
     <div class="row justify-content-center">
         <div class="col-lg-8" style="background: rgb(243, 242, 242);padding:50px 20px 20px;border-radius:10px">
             
-            <form action="/home/vaksin" method="POST" class="mb-5" enctype="multipart/form-data">
+            <form action="/home/visum" method="POST" class="mb-5" enctype="multipart/form-data">
                 @csrf
                 <div class="mb-3">
                     <label for="ktp" class="form-label @error('ktp') is-invalid @enderror">Kartu Identitas(KTP)</label>
@@ -26,6 +26,16 @@
                     <label for="kk" class="form-label @error('kk') is-invalid @enderror">Kartu Keluarga(KK)</label>
                     <input class="form-control" type="file" id="kk" name="kk" required>
                     @error('kk')
+                        <div class="invalid-feedback">
+                            {{ $message }}
+                        </div>
+                    @enderror
+                </div>
+
+                <div class="mb-4">
+                    <label for="skck" class="form-label @error('skck') is-invalid @enderror">SKCK(Surat Keterangan Catatn Kepolisian)</label>
+                    <input class="form-control" type="file" id="skck" name="skck" required>
+                    @error('skck')
                         <div class="invalid-feedback">
                             {{ $message }}
                         </div>

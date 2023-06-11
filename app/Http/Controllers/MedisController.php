@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Medis;
+use Illuminate\Http\Request;
+
 use App\Http\Requests\StoreMedisRequest;
 use App\Http\Requests\UpdateMedisRequest;
 
@@ -14,7 +16,7 @@ class MedisController extends Controller
     public function index()
     {
         return view('Surat.Medis.index', [
-            'medicals' => Medis::all()
+            'medisis' => Medis::all()
         ]);
     }
 
@@ -44,10 +46,10 @@ class MedisController extends Controller
             $kkFileName = $kkFile->store('berkas-medis');
         }
 
-        $medical = new Medis();
-        $medical->ktp = $ktpFileName ?? null;
-        $medical->kk = $kkFileName ?? null;
-        $medical->save();
+        $medis = new Medis();
+        $medis->ktp = $ktpFileName ?? null;
+        $medis->kk = $kkFileName ?? null;
+        $medis->save();
 
         return redirect('/home/medis')->with('success', 'Selamat, Pengajuan Surat Resume Medis Anda Berhasil Dikirim');
     }

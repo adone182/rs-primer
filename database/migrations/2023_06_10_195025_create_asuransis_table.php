@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('asuransis', function (Blueprint $table) {
             $table->id();
+            $table->string('surat_kuasa');
+            $table->string('ktp');
+            $table->string('kk');
             $table->timestamps();
         });
     }

@@ -3,7 +3,7 @@
 
 @section('content')
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-    <h1 class="h2">DAFTAR PENGAJUAN SURAT VAKSIN</h1>
+    <h1 class="h2">DAFTAR PENGAJUAN SURAT RINGKASAN RAWAT JALAN</h1>
 </div>
 
 @if (session()->has('success'))
@@ -15,7 +15,7 @@
 
 {{-- table --}}
 <div class="table-responsive col-lg-8">
-    <a href="/home/vaksin/create" class="btn btn-primary mb-3">BUAT PENGAJUAN VAKSIN</a>
+    <a href="/home/rawatjalan/create" class="btn btn-primary mb-3">BUAT PENGAJUAN RAWAT JALAN</a>
     <table class="table table-striped table-sm">
         <thead>
             <tr>
@@ -26,11 +26,11 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($vaksins as $vaksin)
+            @foreach ($rawats as $rawat)
                 <tr>
-                    <td>{{ $vaksin->id }}</td>
-                    <td>{{ $vaksin->ktp}}</td>
-                    <td>{{ $vaksin->kk}}</td>
+                    <td>{{ $rawat->id }}</td>
+                    <td>{{ $rawat->ktp}}</td>
+                    <td>{{ $rawat->kk}}</td>
                     {{-- <td>
                         <a href="/dashboard/posts/{{ $post->slug }}" class="badge bg-info text-decoration-none"><span
                                 data-feather="eye"></span> Show</a>

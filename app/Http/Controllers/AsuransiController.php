@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Asuransi;
+use Illuminate\Http\Request;
+
 use App\Http\Requests\StoreAsuransiRequest;
 use App\Http\Requests\UpdateAsuransiRequest;
 
@@ -14,7 +16,7 @@ class AsuransiController extends Controller
     public function index()
     {
         return view('Surat.Asuransi.index', [
-            'ansurances' => Asuransi::all()
+            'asuransis' => Asuransi::all()
         ]);
     }
 
@@ -32,22 +34,26 @@ class AsuransiController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'surat_kuasa' => 'required|file|mimes:pdf|max:1024',
             'ktp' => 'required|file|mimes:pdf|max:1024',
             'kk' => 'required|file|mimes:pdf|max:1024',
         ]);
 
-        if ($request->hasFile('ktp') && $request->hasFile('kk')) {
+        if ($request->hasFile('surat_kuasa') && $request->hasFile('ktp') && $request->hasFile('kk')) {
+            $kuasaFile = $request->file('surat_kuasa');
             $ktpFile = $request->file('ktp');
             $kkFile = $request->file('kk');
 
+            $kuasaFileName = $kuasaFile->store('berkas-asurance');
             $ktpFileName = $ktpFile->store('berkas-asurance');
             $kkFileName = $kkFile->store('berkas-asurance');
         }
 
-        $asurance = new Asuransi();
-        $asurance->ktp = $ktpFileName ?? null;
-        $asurance->kk = $kkFileName ?? null;
-        $asurance->save();
+        $asuransi = new Asuransi();
+        $asuransi->surat_kuasa = $kuasaFileName ?? null;
+        $asuransi->ktp = $ktpFileName ?? null;
+        $asuransi->kk = $kkFileName ?? null;
+        $asuransi->save();
 
         return redirect('/home/asuransi')->with('success', 'Selamat, Pengajuan Surat Asuransi Anda Berhasil Dikirim');
     }

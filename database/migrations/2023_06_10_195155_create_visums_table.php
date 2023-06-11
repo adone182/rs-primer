@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('visums', function (Blueprint $table) {
             $table->id();
+            $table->string('ktp');
+            $table->string('kk');
+            $table->string('skck');
             $table->timestamps();
         });
     }

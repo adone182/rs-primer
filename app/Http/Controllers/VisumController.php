@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Visum;
+use Illuminate\Http\Request;
+
 use App\Http\Requests\StoreVisumRequest;
 use App\Http\Requests\UpdateVisumRequest;
 
@@ -34,19 +36,23 @@ class VisumController extends Controller
         $request->validate([
             'ktp' => 'required|file|mimes:pdf|max:1024',
             'kk' => 'required|file|mimes:pdf|max:1024',
+            'skck' => 'required|file|mimes:pdf|max:1024',
         ]);
 
-        if ($request->hasFile('ktp') && $request->hasFile('kk')) {
+        if ($request->hasFile('ktp') && $request->hasFile('kk') && $request->hasFile('skck')) {
             $ktpFile = $request->file('ktp');
             $kkFile = $request->file('kk');
+            $sckcFile = $request->file('skck');
 
             $ktpFileName = $ktpFile->store('berkas-visum');
             $kkFileName = $kkFile->store('berkas-visum');
+            $skckFileName = $skckFile->store('berkas-visum');
         }
 
         $visum = new Visum();
         $visum->ktp = $ktpFileName ?? null;
         $visum->kk = $kkFileName ?? null;
+        $visum->skck = $skckFileName ?? null;
         $visum->save();
 
         return redirect('/home/visum')->with('success', 'Selamat, Pengajuan Surat Visum Anda Berhasil Dikirim');

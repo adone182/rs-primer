@@ -151,49 +151,49 @@
                     <div class="offcanvas-body d-md-flex flex-column p-0 pt-lg-3 overflow-y-auto">
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center gap-2 active" aria-current="page" href="/home">
+                        <a class="nav-link d-flex align-items-center gap-2 {{ Request::is('home') ? 'active' : 'text-dark' }}" aria-current="page" href="/home">
                             <i class="bi bi-house-fill"></i>
                             HOME
                         </a>
                         </li>
                         <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center gap-2" href="/home/vaksin">
+                        <a class="nav-link d-flex align-items-center gap-2 {{ Request::is('home/vaksin*') ? 'active' : 'text-dark' }}" href="/home/vaksin">
                             <i class="bi bi-envelope-open-fill"></i>
                             SURAT VAKSIN
                         </a>
                         </li>
                         <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center gap-2" href="/home/asuransi">
+                        <a class="nav-link d-flex align-items-center gap-2 {{ Request::is('home/asuransi*') ? 'active' : 'text-dark' }}" href="/home/asuransi">
                             <i class="bi bi-envelope-paper-fill"></i>
                             SURAT ASURANSI
                         </a>
                         </li>
                         <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center gap-2" href="/home/lahir">
+                        <a class="nav-link d-flex align-items-center gap-2 {{ Request::is('home/lahir*') ? 'active' : 'text-dark' }}" href="/home/lahir">
                             <i class="bi bi-envelope-plus-fill"></i>
                             SURAT LAHIR
                         </a>
                         </li>
                         <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center gap-2" href="/home/visum">
+                        <a class="nav-link d-flex align-items-center gap-2 {{ Request::is('home/visum*') ? 'active' : 'text-dark' }}" href="/home/visum">
                             <i class="bi bi-envelope-at-fill"></i>
                             SURAT VISUM
                         </a>
                         </li>
                         <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center gap-2" href="/home/medis">
+                        <a class="nav-link d-flex align-items-center gap-2 {{ Request::is('home/medis*') ? 'active' : 'text-dark' }}" href="/home/medis">
                             <i class="bi bi-chat-text-fill"></i>
                             RESUME MEDIS
                         </a>
                         </li>
                         <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center gap-2" href="/home/rawatjalan">
+                        <a class="nav-link d-flex align-items-center gap-2 {{ Request::is('home/rawatjalan*') ? 'active' : 'text-dark' }}" href="/home/rawatjalan">
                             <i class="bi bi-chat-right-text-fill"></i>
                             RINGKASAN RAWAT JALAN
                         </a>
                         </li>
                         <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center gap-2" href="/home/imunisasi">
+                        <a class="nav-link d-flex align-items-center gap-2 {{ Request::is('home/imunisasi*') ? 'active' : 'text-dark' }}" href="/home/imunisasi">
                             <i class="bi bi-chat-left-quote-fill"></i>
                             RINGKASAN IMUNISASI
                         </a>
