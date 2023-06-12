@@ -19,7 +19,9 @@
 
 @section('content')
 
+
 <div class="container text-center my-5 alert alert-warning" role="alert">
+
     <span>Selamat datang <b>{{ Auth::user()->name }}</b>, sesuaikan permintaan surat yang anda butuhkan ya :)</span>
    </div>
 <div class="container">
@@ -38,7 +40,7 @@
                 <img src="{{url('/images/surat-covid.jpg')}}" class="card-img-top" alt="...">
                 <div class="card-body">
                   <h5 class="card-title">Surat Covid</h5>
-                  <a href="/home/covid/craete" class="btn btn-primary">Ajukan Permintaan</a>
+                  <a href="/home/covid/create" class="btn btn-primary">Ajukan Permintaan</a>
                 </div>
               </div>
         </div>

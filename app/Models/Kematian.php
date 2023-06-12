@@ -7,12 +7,12 @@ use App\Models\Riwayat;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Lahir extends Model
+class Kematian extends Model
 {
     use HasFactory;
-
+    
     protected $guarded = "id";
-
+    
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -23,4 +23,3 @@ class Lahir extends Model
         return $this->hasOne(Riwayat::class);
     }
 }
-

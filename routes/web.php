@@ -5,10 +5,13 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LahirController;
 use App\Http\Controllers\MedisController;
+use App\Http\Controllers\SuratController;
 use App\Http\Controllers\VisumController;
 use App\Http\Controllers\VaksinController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RiwayatController;
 use App\Http\Controllers\AsuransiController;
+use App\Http\Controllers\KematianController;
 use App\Http\Controllers\ImunisasiController;
 use App\Http\Controllers\RawatJalanController;
 
@@ -46,10 +49,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/home', [HomeController::class, 'home'])->name('home');
 });
 
-Route::resource('/home/vaksin',VaksinController::class)->middleware('auth');
+Route::resource('/riwayat', RiwayatController::class)->middleware('auth');
+
+Route::resource('/home/surat',SuratController::class)->middleware('auth');
+Route::resource('/home/covid',VaksinController::class)->middleware('auth');
 Route::resource('/home/imunisasi',ImunisasiController::class)->middleware('auth');
 Route::resource('/home/asuransi',AsuransiController::class)->middleware('auth');
 Route::resource('/home/lahir',LahirController::class)->middleware('auth');
+Route::resource('/home/kematian',KematianController::class)->middleware('auth');
 Route::resource('/home/rawatjalan',RawatJalanController::class)->middleware('auth');
 Route::resource('/home/medis',MedisController::class)->middleware('auth');
 Route::resource('/home/visum',VisumController::class)->middleware('auth');

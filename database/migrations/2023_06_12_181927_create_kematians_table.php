@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('asuransis', function (Blueprint $table) {
+        Schema::create('kematians', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->string('nama_pasien');
@@ -19,7 +19,6 @@ return new class extends Migration
             $table->char('no_telp', 12);
             $table->string('ktp');
             $table->string('kk');
-            $table->string('surat_kuasa');
             $table->timestamps();
             
             $table->foreign('user_id')->references('id')->on('users');
@@ -31,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('asuransis');
+        Schema::dropIfExists('kematians');
     }
 };

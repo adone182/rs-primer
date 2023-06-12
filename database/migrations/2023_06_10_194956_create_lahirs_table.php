@@ -13,9 +13,15 @@ return new class extends Migration
     {
         Schema::create('lahirs', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id');
+            $table->string('nama_pasien');
+            $table->char('no_rekam_medis', 12);
+            $table->char('no_telp', 12);
             $table->string('ktp');
             $table->string('kk');
             $table->timestamps();
+            
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 

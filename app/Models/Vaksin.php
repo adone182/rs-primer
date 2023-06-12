@@ -2,12 +2,26 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\User;
+use App\Models\Riwayat;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Vaksin extends Model
 {
     use HasFactory;
 
-    protected $guarded = "id";
+    protected $fillable = [
+        'user_id', 'nama_pasien', 'no_rekam_medis', 'no_telp', 'ktp', 'kk', 'skck',
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function riwayat()
+    {
+        return $this->hasOne(Riwayat::class);
+    }
 }
