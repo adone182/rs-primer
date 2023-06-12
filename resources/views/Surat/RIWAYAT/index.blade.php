@@ -3,8 +3,8 @@
 
 @section('content')
 
-<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center my-5 pb-2 mb-3 border-bottom">
-    <h1 class="h2">DAFTAR RIWAYAT PENGAJUAN {{ auth()->user()->id }} </h1>
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap np run devalign-items-center my-5 pb-2 mb-3 border-bottom">
+    <h1 class="h2">DAFTAR RIWAYAT PENGAJUAN {{ auth()->user()->name }} </h1>
 </div>
 
 @if (session()->has('success'))
@@ -15,6 +15,7 @@
 @endif
 
     <div class="table-responsive col-lg-12">
+    <a href="/home" class="btn btn-primary mb-3">Kembali ke Daftar Pengajuan</a>
     <table class="table table-striped table-sm">
         <thead>
             <tr>
