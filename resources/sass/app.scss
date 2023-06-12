@@ -6,3 +6,36 @@
 
 // Bootstrap
 @import 'bootstrap/scss/bootstrap';
+
+
+footer {
+    background: #0d2f50; margin-top: 70px
+}
+
+.section-alamat-hospital {
+    color: #fff;
+    font-size: 16px;
+}
+
+.section-contact-footer a{
+    color: #f79521;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+.section-contact-footer {
+    color: #fff;
+    font-size: 16px;
+}
+
+.sosmed-footer .bi {
+    font-size: 37px;
+    color: #fff; 
+    padding: 0 60px 0 0px; 
+}
+
+.section-copyright {
+    padding: 10px 0; 
+    color:#fff;
+    font-size: 16px;
+}

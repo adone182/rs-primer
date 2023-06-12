@@ -24,7 +24,7 @@
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 </head>
 <body>
-    {{-- <div id="app">
+    <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}">
@@ -67,6 +67,8 @@
                                         {{ __('Logout') }}
                                     </a>
 
+                                    <a href="" class="dropdown-item">History</a>
+
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                                         @csrf
                                     </form>
@@ -77,140 +79,59 @@
                 </div>
             </div>
         </nav>
+    </div>
 
-        <main class="py-4">
-            @yield('content')
-        </main>
-    </div> --}}
-    <header class="navbar sticky-top bg-primary flex-md-nowrap px-1 shadow" data-bs-theme="dark">
-        <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6 text-white bg-primary" href="#">RSBINTARO</a>
-
-        <ul class="navbar-nav flex-row d-md-none">
-            <li class="nav-item text-nowrap">
-            <button class="nav-link px-3 text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSearch" aria-controls="navbarSearch" aria-expanded="false" aria-label="Toggle search">
-                <svg class="bi"><use xlink:href="#search"/></svg>
-            </button>
-            </li>
-            <li class="nav-item text-nowrap">
-            <button class="nav-link px-3 text-dark bg-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
-                <svg class="bi"><use xlink:href="#list"/></svg>
-            </button>
-            </li>
-        </ul>
-        <!-- Right Side Of Navbar -->
-        <div class="container">
-            <ul class="navbar-nav ms-auto">
-                <!-- Authentication Links -->
-                @guest
-                    @if (Route::has('login'))
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
-                        </li>
-                    @endif
-
-                    @if (Route::has('register'))
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                        </li>
-                    @endif
-                @else
-                    <li class="nav-item dropdown">
-                        <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                            {{ Auth::user()->name }}
-                        </a>
-
-                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="{{ route('logout') }}"
-                                onclick="event.preventDefault();
-                                                document.getElementById('logout-form').submit();">
-                                {{ __('Logout') }}
-                            </a>
-
-                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                @csrf
-                            </form>
-                        </div>
-                    </li>
-                @endguest
-            </ul>
-        </div>
-        {{-- <div id="navbarSearch" class="navbar-search w-100 collapse">
-            <input class="form-control w-100 rounded-0 border-0" type="text" placeholder="Search" aria-label="Search">
-        </div> --}}
-    </header>
-    
-    <div class="container-fluid">
-        <div class="row">
-            {{-- sidebar --}}
-            <div class="sidebar border border-right col-md-3 col-lg-2 p-0 bg-body-tertiary">
-                <div class="offcanvas-lg offcanvas-end bg-body-tertiary" tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel">
-                    <div class="offcanvas-header">
-                    <h5 class="offcanvas-title" id="sidebarMenuLabel">RSBINTARO</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#sidebarMenu" aria-label="Close"></button>
-                    </div>
-                    <div class="offcanvas-body d-md-flex flex-column p-0 pt-lg-3 overflow-y-auto">
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center gap-2 {{ Request::is('home') ? 'active' : 'text-dark' }}" aria-current="page" href="/home">
-                            <i class="bi bi-house-fill"></i>
-                            HOME
-                        </a>
-                        </li>
-                        <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center gap-2 {{ Request::is('home/vaksin*') ? 'active' : 'text-dark' }}" href="/home/vaksin">
-                            <i class="bi bi-envelope-open-fill"></i>
-                            SURAT VAKSIN
-                        </a>
-                        </li>
-                        <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center gap-2 {{ Request::is('home/asuransi*') ? 'active' : 'text-dark' }}" href="/home/asuransi">
-                            <i class="bi bi-envelope-paper-fill"></i>
-                            SURAT ASURANSI
-                        </a>
-                        </li>
-                        <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center gap-2 {{ Request::is('home/lahir*') ? 'active' : 'text-dark' }}" href="/home/lahir">
-                            <i class="bi bi-envelope-plus-fill"></i>
-                            SURAT LAHIR
-                        </a>
-                        </li>
-                        <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center gap-2 {{ Request::is('home/visum*') ? 'active' : 'text-dark' }}" href="/home/visum">
-                            <i class="bi bi-envelope-at-fill"></i>
-                            SURAT VISUM
-                        </a>
-                        </li>
-                        <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center gap-2 {{ Request::is('home/medis*') ? 'active' : 'text-dark' }}" href="/home/medis">
-                            <i class="bi bi-chat-text-fill"></i>
-                            RESUME MEDIS
-                        </a>
-                        </li>
-                        <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center gap-2 {{ Request::is('home/rawatjalan*') ? 'active' : 'text-dark' }}" href="/home/rawatjalan">
-                            <i class="bi bi-chat-right-text-fill"></i>
-                            RINGKASAN RAWAT JALAN
-                        </a>
-                        </li>
-                        <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center gap-2 {{ Request::is('home/imunisasi*') ? 'active' : 'text-dark' }}" href="/home/imunisasi">
-                            <i class="bi bi-chat-left-quote-fill"></i>
-                            RINGKASAN IMUNISASI
-                        </a>
-                        </li>
-                    </ul>
-
-
-                    </div>
-                </div>
-            </div>
-
-            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <main class="container">
                 {{-- <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"> --}}
                     @yield('content')
                 {{-- </div> --}}
             </main>
-        </div>
+        <main class="py-0">
+            <footer>
+                <div class="container">
+                    <div class="row g-5">
+                        <div class="col-sm-12 col-md-12 col-lg-4">
+                            <div class="section-logo-footer">
+                                <img src="{{url('images/logo-footer-hospital.svg')}}" class="img-fluid" alt="" srcset="">
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-12 col-lg-4">
+                            <div class="section-alamat-hospital">
+                                <span>RS Premier Bintaro</span> <br>
+                                <span>Jl. MH Thamrin No. 1, Sektor 7 Bintaro Jaya, Kota Tangerang Selatan, 15224</span> 
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-12 col-lg-4">
+                            <div class="section-contact-footer">
+                                <span>RS Premier Bintaro</span><br>
+                                <span>RSDHealth Careline:<a href="http://tel:1500908"> 1 500 908</a></span><br>
+                                <span>WA Appointment:<a href="https://api.whatsapp.com/send/?phone=6281222309911&text&type=phone_number&app_absent=0"> +62 8122 2309 911</a></span><br>
+                                <span>IGD & Ambulans: +6221 7458 118</span>
+                                <span>WA IGD & Ambulans: +62811 9690 5513</span>
+                            </div>
+                        </div>
+                    </div>
+                    <hr style="border: 2px solid #fff">
+                </div>
+                <div class="footer-bottom">
+                    <div class="container">
+                        <div class="section-footer-bottom" style="justify-content: space-evenly; display: block">
+                            <div class="sosmed-footer">
+                                <a href="https://www.instagram.com/rspremierbintaro/"><i class="bi bi-instagram"></i></a>
+                                <a href="https://www.facebook.com/RSPremierBintaro/"><i class="bi bi-facebook"></i></a>
+                                <a href="https://www.youtube.com/c/PremierBintaroHospital"><i class="bi bi-youtube"></i></a>
+                                <a href="https://www.google.com/maps/place/Premier+Bintaro+Hospital/@-6.2761985,106.721535,17z/data=!3m1!4b1!4m5!3m4!1s0x2e69fa9d8b042767:0x2a7956b6a6d3c3c3!8m2!3d-6.2761985!4d106.7237237"><i class="bi bi-geo-alt-fill"></i></a>
+                            </div>
+                            <div class="section-copyright">
+                                <span>&copy; 2021 Ramsay Sime Darby Health Care - Hak Cipta Dilindungi</span>
+                            </div>
+                            </div>               
+                        </div>
+                    </div>
+                </div>
+            </footer>
+            @yield('footer')
+        </main>
     </div>
 
     <script src="assets/js/dashboard.js"></script>

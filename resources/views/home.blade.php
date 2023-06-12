@@ -19,118 +19,89 @@
 
 @section('content')
 
-<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"> 
-    <h1>PILIHAN SURAT PENGAJUAN</h1>
-</div>
+<div class="container text-center my-5 alert alert-warning" role="alert">
+    <span>Selamat datang <b>{{ Auth::user()->name }}</b>, sesuaikan permintaan surat yang anda butuhkan ya :)</span>
+   </div>
 <div class="container">
-    <div class="row">
-        <div class="col-lg-4 my-3 img-hover">
-            <a href="/home/vaksin/create">
-                <div class="card bg-dark text-white">
-                    <img src="https://source.unsplash.com/500x500?/vaksin" class="img-fluid"
-                        alt="">
-                    <div class="card-img-overlay p-0 d-flex align-items-center">
-                        <h5 class="card-title text-center flex-fill p-4 fs-4"
-                            style="background-color: rgba(0,0,0, 0.6)">
-                            SURAT VAKSIN
-                        </h5>
-                    </div>
+    <div class="row g-5 text-center">
+        <div class="col-sm-12 col-md-12 col-lg-4">
+            <div class="card">
+                <img src="{{url('/images/surat-asuransi.webp')}}" class="card-img-top" alt="...">
+                <div class="card-body">
+                  <h5 class="card-title">Klaim Asuransi</h5>
+                  <a href="/home/asuransi/create" class="btn btn-primary">Ajukan Permintaan</a>
                 </div>
-            </a>
+              </div>
         </div>
-
-        <div class="col-lg-4 my-3 img-hover">
-            <a href="/home/asuransi/create">
-                <div class="card bg-dark text-white">
-                    <img src="https://source.unsplash.com/500x500?/a" nsuranceclass="img-fluid"
-                        alt="">
-                    <div class="card-img-overlay p-0 d-flex align-items-center">
-                        <h5 class="card-title text-center flex-fill p-4 fs-4"
-                            style="background-color: rgba(0,0,0, 0.6)">
-                            SURAT ASURANSI
-                        </h5>
-                    </div>
+        <div class="col-sm-12 col-md-12 col-lg-4">
+            <div class="card">
+                <img src="{{url('/images/surat-covid.jpg')}}" class="card-img-top" alt="...">
+                <div class="card-body">
+                  <h5 class="card-title">Surat Covid</h5>
+                  <a href="/home/covid/craete" class="btn btn-primary">Ajukan Permintaan</a>
                 </div>
-            </a>
+              </div>
         </div>
-
-        <div class="col-lg-4 my-3 img-hover">
-            <a href="/home/lahir/create">
-                <div class="card bg-dark text-white">
-                    <img src="https://source.unsplash.com/500x500?/born" class="img-fluid"
-                        alt="">
-                    <div class="card-img-overlay p-0 d-flex align-items-center">
-                        <h5 class="card-title text-center flex-fill p-4 fs-4"
-                            style="background-color: rgba(0,0,0, 0.6)">
-                            SURAT KETERANGAN KELAHIRAN
-                        </h5>
-                    </div>
+        <div class="col-sm-12 col-md-12 col-lg-4">
+            <div class="card">
+                <img src="{{url('images/ringkasan-rawat-jalan.webp')}}" class="card-img-top" alt="...">
+                <div class="card-body">
+                  <h5 class="card-title">Ringkasan Rawat Jalan</h5>
+                  <a href="/home/rawatjalan/create" class="btn btn-primary">Ajukan Permintaan</a>
                 </div>
-            </a>
+              </div>
         </div>
-
-        <div class="col-lg-4 my-3 img-hover">
-            <a href="/home/rawatjalan/create">
-                <div class="card bg-dark text-white">
-                    <img src="https://source.unsplash.com/500x500?/vaksin" class="img-fluid"
-                        alt="">
-                    <div class="card-img-overlay p-0 d-flex align-items-center">
-                        <h5 class="card-title text-center flex-fill p-4 fs-4"
-                            style="background-color: rgba(0,0,0, 0.6)">
-                            RINGKASAN RAWAT JALAN
-                        </h5>
-                    </div>
+        <div class="col-sm-12 col-md-12 col-lg-4">
+            <div class="card">
+                <img src="{{url('images/ringkasan-rawat-inap.webp')}}" class="card-img-top" alt="...">
+                <div class="card-body">
+                  <h5 class="card-title">Resume Medis Rawat Inap</h5>
+                  <a href="/home/medis/create" class="btn btn-primary">Ajukan Permintaan</a>
                 </div>
-            </a>
+              </div>
         </div>
-
-        <div class="col-lg-4 my-3 img-hover">
-            <a href="/home/imunisasi/create">
-                <div class="card bg-dark text-white">
-                    <img src="https://source.unsplash.com/500x500?/vaksin" class="img-fluid"
-                        alt="">
-                    <div class="card-img-overlay p-0 d-flex align-items-center">
-                        <h5 class="card-title text-center flex-fill p-4 fs-4"
-                            style="background-color: rgba(0,0,0, 0.6)">
-                            RINGKASAN IMUNISASI
-                        </h5>
-                    </div>
+        <div class="col-sm-12 col-md-12 col-lg-4">
+            <div class="card">
+                <img src="{{url('images/imunisasi.jpg')}}" class="card-img-top" alt="...">
+                <div class="card-body">
+                  <h5 class="card-title">Ringkasan Imunisasi</h5>
+                  <a href="/home/imunisasi/create" class="btn btn-primary">Ajukan Permintaan</a>
                 </div>
-            </a>
+              </div>
         </div>
-
-        <div class="col-lg-4 my-3 img-hover">
-            <a href="/home/medis/create">
-                <div class="card bg-dark text-white">
-                    <img src="https://source.unsplash.com/500x500?/medis" class="img-fluid"
-                        alt="">
-                    <div class="card-img-overlay p-0 d-flex align-items-center">
-                        <h5 class="card-title text-center flex-fill p-4 fs-4"
-                            style="background-color: rgba(0,0,0, 0.6)">
-                            RESUME MEDIS
-                        </h5>
-                    </div>
+        <div class="col-sm-12 col-md-12 col-lg-4">
+            <div class="card">
+                <img src="{{url('images/surat-kematian.jpg')}}" class="card-img-top" alt="...">
+                <div class="card-body">
+                  <h5 class="card-title">Surat Keterangan Kematian</h5>
+                  <a href="/home/kematian/create" class="btn btn-primary">Ajukan Permintaan</a>
                 </div>
-            </a>
+              </div>
         </div>
-        <center>
-        <div class="col-lg-4 my-3 img-hover">
-            <a href="/home/visum/create">
-                <div class="card bg-dark text-white">
-                    <img src="https://source.unsplash.com/500x500?/visum" class="img-fluid"
-                        alt="">
-                    <div class="card-img-overlay p-0 d-flex align-items-center">
-                        <h5 class="card-title text-center flex-fill p-4 fs-4"
-                            style="background-color: rgba(0,0,0, 0.6)">
-                            SURAT VISUM
-                        </h5>
-                    </div>
+        <div class="col-sm-12 col-md-12 col-lg-4">
+            <div class="card">
+                <img src="{{url('images/surat-kelahiran.jpg')}}" class="card-img-top" alt="...">
+                <div class="card-body">
+                  <h5 class="card-title">Surat Keterangan Lahir</h5>
+                  <a href="/home/lahir/create" class="btn btn-primary">Ajukan Permintaan</a>
                 </div>
-            </a>
+              </div>
         </div>
-        </center>
-
+        <div class="col-sm-12 col-md-12 col-lg-4">
+            <div class="card">
+                <img src="{{url('images/surat-visum.jpg')}}" class="card-img-top" alt="...">
+                <div class="card-body">
+                  <h5 class="card-title">Visum Et Repertum</h5>
+                  <a href="/home/visum/create" class="btn btn-primary">Ajukan Permintaan</a>
+                </div>
+              </div>
+        </div>
     </div>
 </div>
+</div>
+    
+@endsection
+
+@section('footer')
     
 @endsection
