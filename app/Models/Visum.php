@@ -11,7 +11,9 @@ class Visum extends Model
 {
     use HasFactory;
 
-    protected $guarded = "id";
+    protected $fillable = [
+        'user_id', 'nama_pasien', 'no_rekam_medis', 'no_telp', 'ktp', 'kk','skck'
+    ];
 
     public function user()
     {

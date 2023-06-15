@@ -13,6 +13,7 @@ use App\Http\Controllers\RiwayatController;
 use App\Http\Controllers\AsuransiController;
 use App\Http\Controllers\KematianController;
 use App\Http\Controllers\ImunisasiController;
+use App\Http\Controllers\NotifikasiController;
 use App\Http\Controllers\RawatJalanController;
 
 /*
@@ -49,10 +50,23 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/home', [HomeController::class, 'home'])->name('home');
 });
 
+// Route::group(['middleware' => 'auth'], function () {
+//     Route::get('/notifikasi', [NotifikasiController::class, 'index'])->name('notifikasi.index');
+//     Route::get('/notifikasi/{id}', [NotifikasiController::class, 'show'])->name('notifikasi.show');
+// });
+
+Route::get('/pesan', function () {
+    // Mengambil pesan yang tersimpan dalam sesi untuk pengguna saat ini
+    $userId = Auth::id();
+    $pesan = session()->get('pesan.' . $userId, []);
+
+    return view('SURAT.RIWAYAT.pesan', compact('pesan'));
+})->name('pesan');
+
 Route::resource('/riwayat', RiwayatController::class)->middleware('auth');
 
 Route::resource('/home/surat',SuratController::class)->middleware('auth');
-Route::resource('/home/covid',VaksinController::class)->middleware('auth');
+Route::resource('/home/lain',VaksinController::class)->middleware('auth');
 Route::resource('/home/imunisasi',ImunisasiController::class)->middleware('auth');
 Route::resource('/home/asuransi',AsuransiController::class)->middleware('auth');
 Route::resource('/home/lahir',LahirController::class)->middleware('auth');

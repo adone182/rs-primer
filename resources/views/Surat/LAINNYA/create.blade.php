@@ -3,13 +3,13 @@
 
 @section('content')
 <div class="d-flex justify-content-center flex-wrap flex-md-nowrap align-items-center pt-0 pb-0 mb-5 border-bottom mt-5">
-        <h1 class="h2">FORM PENGAJUAN SURAT COVID</h1>
+        <h1 class="h2">FORM PENGAJUAN SURAT</h1>
     </div>
 
     <div class="row justify-content-center">
         <div class="col-lg-8" style="background: rgb(243, 242, 242);padding:50px 20px 20px;border-radius:10px">
             
-            <form action="/home/covid" method="POST" class="mb-5" enctype="multipart/form-data">
+            <form action="/home/lain" method="POST" class="mb-5" enctype="multipart/form-data">
                 @csrf
                 <div class="mb-3">
                     <label for="nama_pasien" class="form-label @error('nama_pasien') is-invalid @enderror">Nama Pasien</label>

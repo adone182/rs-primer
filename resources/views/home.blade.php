@@ -39,8 +39,8 @@
             <div class="card">
                 <img src="{{url('/images/surat-covid.jpg')}}" class="card-img-top" alt="...">
                 <div class="card-body">
-                  <h5 class="card-title">Surat Covid</h5>
-                  <a href="/home/covid/create" class="btn btn-primary">Ajukan Permintaan</a>
+                  <h5 class="card-title">Surat Lainnya</h5>
+                  <a href="/home/lain/create" class="btn btn-primary">Ajukan Permintaan</a>
                 </div>
               </div>
         </div>

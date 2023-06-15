@@ -1,10 +1,16 @@
 <?php
 
 namespace App\Http\Controllers;
+use Carbon\Carbon;
+use Carbon\CarbonInterface;
+setlocale(LC_TIME, 'id_ID');
+Carbon::setLocale('id');
 
+use App\Models\Surat;
+use App\Models\Riwayat;
 use App\Models\Visum;
-use Illuminate\Http\Request;
 
+use Illuminate\Http\Request;
 use App\Http\Requests\StoreVisumRequest;
 use App\Http\Requests\UpdateVisumRequest;
 
@@ -15,9 +21,9 @@ class VisumController extends Controller
      */
     public function index()
     {
-        return view('Surat.Visum.index', [
-            'visums' => Visum::all()
-        ]);
+        // return view('Surat.Visum.index', [
+        //     'visums' => Visum::all()
+        // ]);
     }
 
     /**
@@ -25,37 +31,59 @@ class VisumController extends Controller
      */
     public function create()
     {
-         return view('Surat.Visum.create');
+        //  $suratVisum = Surat::where('jenis_surat', 'VISUM')->first();
+         return view('Surat.VISUM.create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreVisumRequest $request)
+    public function store(Request $request)
     {
-        $request->validate([
+        $validatedData = $request->validate([
+            'nama_pasien' => 'required|string',
+            'no_rekam_medis' => 'required|numeric|max:999999999999',
+            'no_telp' => 'required|numeric|max:999999999999',
             'ktp' => 'required|file|mimes:pdf|max:1024',
             'kk' => 'required|file|mimes:pdf|max:1024',
             'skck' => 'required|file|mimes:pdf|max:1024',
         ]);
 
-        if ($request->hasFile('ktp') && $request->hasFile('kk') && $request->hasFile('skck')) {
-            $ktpFile = $request->file('ktp');
-            $kkFile = $request->file('kk');
-            $sckcFile = $request->file('skck');
+        // Simpan file KTP, KK, dan SKCK yang diunggah
+        $ktpPath = $request->file('ktp')->store('surat_visum');
+        $kkPath = $request->file('kk')->store('surat_visum');
+        $skckPath = $request->file('skck')->store('surat_visum');
 
-            $ktpFileName = $ktpFile->store('berkas-visum');
-            $kkFileName = $kkFile->store('berkas-visum');
-            $skckFileName = $skckFile->store('berkas-visum');
-        }
-
+        // Simpan pengajuan surat ke tabel
         $visum = new Visum();
-        $visum->ktp = $ktpFileName ?? null;
-        $visum->kk = $kkFileName ?? null;
-        $visum->skck = $skckFileName ?? null;
+        $visum->user_id = auth()->user()->id;
+        $visum->nama_pasien = $validatedData['nama_pasien'];
+        $visum->no_rekam_medis = $validatedData['no_rekam_medis'];
+        $visum->no_telp = $validatedData['no_telp'];
+        $visum->ktp = $ktpPath;
+        $visum->kk = $kkPath;
+        $visum->skck = $skckPath;
         $visum->save();
 
-        return redirect('/home/visum')->with('success', 'Selamat, Pengajuan Surat Visum Anda Berhasil Dikirim');
+        // Dapatkan surat dari database
+        $suratVisum = Surat::where('jenis_surat', 'VISUM')->first();
+        
+        if (!$suratVisum) {
+            // Tambahkan penanganan kesalahan jika surat tidak ditemukan
+            return redirect()->back()->with('error', 'Surat tidak ditemukan.');
+        }
+
+        // Simpan riwayat pengajuan surat ke dalam tabel "riwayats"
+        $riwayat = Riwayat::create([
+            'user_id' => auth()->user()->id,
+            'surat_id' => $suratVisum->id,
+            'visum_id' => $visum->id,
+            'jenis_surat' => 'VISUM',
+            'tanggal_pengajuan' =>  Carbon::now()->timezone('Asia/Jakarta')->toDateTimeString(),
+            'status' => 'pending',
+        ]);
+
+        return redirect('/riwayat')->with('success', 'Pengajuan surat visum berhasil dikirim.');
     }
 
     /**

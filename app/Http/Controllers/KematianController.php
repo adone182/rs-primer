@@ -1,11 +1,16 @@
 <?php
 
 namespace App\Http\Controllers;
+use Carbon\Carbon;
+use Carbon\CarbonInterface;
+setlocale(LC_TIME, 'id_ID');
+Carbon::setLocale('id');
 
+use App\Models\Riwayat;
 use App\Models\Kematian;
 use App\Models\Surat;
+
 use Illuminate\Http\Request;
-use App\Http\Controllers\KematianController;
 use App\Http\Requests\StoreKematianRequest;
 use App\Http\Requests\UpdateKematianRequest;
 
@@ -24,8 +29,8 @@ class KematianController extends Controller
      */
     public function create()
     {
-        $suratKematian = Surat::where('jenis_surat', 'kematian')->first();
-        return view('Surat.Kematian.create', compact('suratKematian'));
+        $suratKematian = Surat::where('jenis_surat', 'KEMATIAN')->first();
+        return view('Surat.KEMATIAN.create', compact('suratKematian'));
     }
 
     /**
@@ -33,39 +38,47 @@ class KematianController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validatedData = $request->validate([
             'nama_pasien' => 'required|string',
-            'no_rekam_medis' => 'required|numeric|max:12',
-            'no_telp' => 'required|numeric|max:12',
+            'no_rekam_medis' => 'required|numeric|max:999999999999',
+            'no_telp' => 'required|numeric|max:999999999999',
             'ktp' => 'required|file|mimes:pdf|max:1024',
             'kk' => 'required|file|mimes:pdf|max:1024',
         ]);
 
         // Simpan file KTP, KK, dan SKCK yang diunggah
-        $ktpPath = $validatedData['ktp']->store('surat_kematian');
-        $kkPath = $validatedData['kk']->store('surat_kematian');
+        $ktpPath = $request->file('ktp')->store('surat_kematian');
+        $kkPath = $request->file('kk')->store('surat_kematian');
 
-        // Simpan pengajuan surat vaksin ke tabel "vaksins"
-        $kematian = Kematian::create([
-            'user_id' => auth()->user()->id,
-            'nama_pasien' => $validatedData['nama_pasien'],
-            'no_rekam_medis' => $validatedData['no_rekam_medis'],
-            'no_telp' => $validatedData['no_telp'],
-            'ktp' => $ktpPath,
-            'kk' => $kkPath,
-        ]);
+        // Simpan pengajuan surat ke tabel
+        $kematian = new Kematian();
+        $kematian->user_id = auth()->user()->id;
+        $kematian->nama_pasien = $validatedData['nama_pasien'];
+        $kematian->no_rekam_medis = $validatedData['no_rekam_medis'];
+        $kematian->no_telp = $validatedData['no_telp'];
+        $kematian->ktp = $ktpPath;
+        $kematian->kk = $kkPath;
+        $kematian->save();
+
+        // Dapatkan surat dari database
+        $suratKematian = Surat::where('jenis_surat', 'KEMATIAN')->first();
+        
+        if (!$suratKematian) {
+            // Tambahkan penanganan kesalahan jika surat tidak ditemukan
+            return redirect()->back()->with('error', 'Surat tidak ditemukan.');
+        }
 
         // Simpan riwayat pengajuan surat ke dalam tabel "riwayats"
         $riwayat = Riwayat::create([
             'user_id' => auth()->user()->id,
             'surat_id' => $suratKematian->id,
-            'vaksin_id' => $kematian->id,
-            'jenis_surat' => 'kematian', // Menyimpan informasi jenis surat
-            'tanggal_pengajuan' => now(),
+            'kematian_id' => $kematian->id,
+            'jenis_surat' => 'KEMATIAN',
+            'tanggal_pengajuan' =>  Carbon::now()->timezone('Asia/Jakarta')->toDateTimeString(),
             'status' => 'pending',
         ]);
 
-        return redirect('/home')->with('success', 'Pengajuan surat Kematian berhasil dikirim.');
+        return redirect('/riwayat')->with('success', 'Pengajuan surat kematian berhasil dikirim.');
     }
 
     /**

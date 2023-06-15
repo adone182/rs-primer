@@ -1,12 +1,15 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
-setlocale(LC_TIME, 'id_ID');
-Carbon::setLocale('id');
+// setlocale(LC_TIME, 'id_ID');
+// Carbon::setLocale('id');
 
 use App\Models\Riwayat;
+use App\Models\Notifikasi;
 use App\Http\Requests\StoreRiwayatRequest;
 use App\Http\Requests\UpdateRiwayatRequest;
 
@@ -17,19 +20,23 @@ class RiwayatController extends Controller
      */
     public function index()
     {
-        
-       $riwayats = Riwayat::select('riwayats.id as no', 'vaksins.nama_pasien', 'vaksins.no_rekam_medis', 'vaksins.no_telp', 'riwayats.jenis_surat', 'riwayats.tanggal_pengajuan', 'riwayats.status')
-        ->join('vaksins', 'riwayats.id', '=', 'vaksins.id')
-        ->get();
+        // $riwayats = Riwayat::select('riwayats.id as no', 'vaksins.nama_pasien', 'vaksins.no_rekam_medis', 'vaksins.no_telp','riwayats.jenis_surat', 'riwayats.tanggal_pengajuan', 'riwayats.status')
+        //     ->join('vaksins', 'riwayats.id', '=', 'vaksins.id')
+        //     ->get();
+        $user = Auth::user();
+        $riwayats = Riwayat::where('user_id', $user->id)
+            ->with(['vaksin', 'visum', 'imunisasi', 'rawat_jalan', 'lahir', 'kematian', 'medis', 'asuransi'])
+            ->get();
 
-                // Konversi format tanggal menggunakan Carbon
+        return view('Surat.RIWAYAT.index', compact('riwayats'));
+
+        // Konversi format tanggal menggunakan Carbon
         foreach ($riwayats as $riwayat) {
-            $riwayat->tanggal_pengajuan = Carbon::parse($riwayat->tanggal_pengajuan)->translatedFormat('l, d F Y');
+            $tanggalPengajuan = Carbon::parse($riwayat->tanggal_pengajuan);
+            $riwayat->tanggal_pengajuan = $tanggalPengajuan->isoFormat('dddd, D MMMM Y');
         }
 
-    return view('Surat.RIWAYAT.index', compact('riwayats'));
-
-
+        return view('Surat.RIWAYAT.index', compact('riwayats'));
     }
 
     /**
@@ -45,7 +52,17 @@ class RiwayatController extends Controller
      */
     public function store(StoreRiwayatRequest $request)
     {
-        //
+        // Simpan riwayat vaksin
+        $riwayat = new Riwayat;
+        // Mengisi atribut-atribut riwayat vaksin
+        $riwayat->save();
+
+        // Buat notifikasi pengajuan berhasil dikirim
+        $pesan = 'Pengajuan Anda berhasil dikirim';
+        $this->createNotifikasi($riwayat, $pesan);
+
+        // Redirect ke halaman yang sesuai
+        return redirect()->route('nama_rute');
     }
 
     /**
@@ -78,5 +95,18 @@ class RiwayatController extends Controller
     public function destroy(Riwayat $riwayat)
     {
         //
+    }
+
+    /**
+     * Create a notification based on the provided data.
+     */
+    private function createNotifikasi($riwayat, $pesan, $link = null)
+    {
+        $notifikasi = new Notifikasi();
+        $notifikasi->user_id = Auth::id();
+        $notifikasi->riwayat_id = $riwayat->id;
+        $notifikasi->pesan = $pesan;
+        $notifikasi->link = $link;
+        $notifikasi->save();
     }
 }

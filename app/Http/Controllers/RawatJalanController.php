@@ -1,10 +1,16 @@
 <?php
 
 namespace App\Http\Controllers;
+use Carbon\Carbon;
+use Carbon\CarbonInterface;
+setlocale(LC_TIME, 'id_ID');
+Carbon::setLocale('id');
 
+use App\Models\Surat;
+use App\Models\Riwayat;
 use App\Models\RawatJalan;
-use Illuminate\Http\Request;
 
+use Illuminate\Http\Request;
 use App\Http\Requests\StoreRawatJalanRequest;
 use App\Http\Requests\UpdateRawatJalanRequest;
 
@@ -15,9 +21,9 @@ class RawatJalanController extends Controller
      */
     public function index()
     {
-        return view('Surat.Rawat.index', [
-            'rawats' => RawatJalan::all()
-        ]);
+        // return view('Surat.Rawat.index', [
+        //     'rawats' => RawatJalan::all()
+        // ]);
     }
 
     /**
@@ -25,7 +31,8 @@ class RawatJalanController extends Controller
      */
     public function create()
     {
-         return view('Surat.Rawat.create');
+         $suratRawat = Surat::where('jenis_surat', 'RAWATJALAN')->first();
+         return view('Surat.RAWAT.create', compact('suratRawat'));
     }
 
     /**
@@ -33,25 +40,47 @@ class RawatJalanController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validatedData = $request->validate([
+            'nama_pasien' => 'required|string',
+            'no_rekam_medis' => 'required|numeric|max:999999999999',
+            'no_telp' => 'required|numeric|max:999999999999',
             'ktp' => 'required|file|mimes:pdf|max:1024',
             'kk' => 'required|file|mimes:pdf|max:1024',
         ]);
 
-        if ($request->hasFile('ktp') && $request->hasFile('kk')) {
-            $ktpFile = $request->file('ktp');
-            $kkFile = $request->file('kk');
+        // Simpan file KTP, KK, dan SKCK yang diunggah
+        $ktpPath = $request->file('ktp')->store('surat_rawatjalan');
+        $kkPath = $request->file('kk')->store('surat_rawatjalan');
 
-            $ktpFileName = $ktpFile->store('berkas-rawat');
-            $kkFileName = $kkFile->store('berkas-rawat');
-        }
-
-        $rawat = new Rawat();
-        $rawat->ktp = $ktpFileName ?? null;
-        $rawat->kk = $kkFileName ?? null;
+        // Simpan pengajuan surat ke tabel
+        $rawat = new RawatJalan();
+        $rawat->user_id = auth()->user()->id;
+        $rawat->nama_pasien = $validatedData['nama_pasien'];
+        $rawat->no_rekam_medis = $validatedData['no_rekam_medis'];
+        $rawat->no_telp = $validatedData['no_telp'];
+        $rawat->ktp = $ktpPath;
+        $rawat->kk = $kkPath;
         $rawat->save();
 
-        return redirect('/home/rawatjalan')->with('success', 'Selamat, Pengajuan Surat Rawat Jalan Anda Berhasil Dikirim');
+        // Dapatkan surat dari database
+        $suratRawat = Surat::where('jenis_surat', 'RAWATJALAN')->first();
+        
+        if (!$suratRawat) {
+            // Tambahkan penanganan kesalahan jika surat tidak ditemukan
+            return redirect()->back()->with('error', 'Surat tidak ditemukan.');
+        }
+
+        // Simpan riwayat pengajuan surat ke dalam tabel "riwayats"
+        $riwayat = Riwayat::create([
+            'user_id' => auth()->user()->id,
+            'surat_id' => $suratRawat->id,
+            'rawat_jalan_id' => $rawat->id,
+            'jenis_surat' => 'RAWATJALAN',
+            'tanggal_pengajuan' =>  Carbon::now()->timezone('Asia/Jakarta')->toDateTimeString(),
+            'status' => 'pending',
+        ]);
+
+        return redirect('/riwayat')->with('success', 'Pengajuan surat Rawat Jalan berhasil dikirim.');
     }
 
     /**

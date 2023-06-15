@@ -1,7 +1,13 @@
 <?php
 
 namespace App\Http\Controllers;
+use Carbon\Carbon;
+use Carbon\CarbonInterface;
+setlocale(LC_TIME, 'id_ID');
+Carbon::setLocale('id');
 
+use App\Models\Surat;
+use App\Models\Riwayat;
 use App\Models\Lahir;
 use Illuminate\Http\Request;
 
@@ -15,9 +21,9 @@ class LahirController extends Controller
      */
     public function index()
     {
-        return view('Surat.Lahir.index', [
-            'lahirs' => Lahir::all()
-        ]);
+        // return view('Surat.Lahir.index', [
+        //     'lahirs' => Lahir::all()
+        // ]);
     }
 
     /**
@@ -25,7 +31,8 @@ class LahirController extends Controller
      */
     public function create()
     {
-         return view('Surat.Lahir.create');
+         $suratLahir = Surat::where('jenis_surat', 'KELAHIRAN')->first();
+         return view('Surat.LAHIR.create', compact('suratLahir'));
     }
 
     /**
@@ -33,25 +40,47 @@ class LahirController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validatedData = $request->validate([
+            'nama_pasien' => 'required|string',
+            'no_rekam_medis' => 'required|numeric|max:999999999999',
+            'no_telp' => 'required|numeric|max:999999999999',
             'ktp' => 'required|file|mimes:pdf|max:1024',
             'kk' => 'required|file|mimes:pdf|max:1024',
         ]);
 
-        if ($request->hasFile('ktp') && $request->hasFile('kk')) {
-            $ktpFile = $request->file('ktp');
-            $kkFile = $request->file('kk');
+        // Simpan file KTP, KK, dan SKCK yang diunggah
+        $ktpPath = $request->file('ktp')->store('surat_lahir');
+        $kkPath = $request->file('kk')->store('surat_lahir');
 
-            $ktpFileName = $ktpFile->store('berkas-lahir');
-            $kkFileName = $kkFile->store('berkas-lahir');
-        }
-
+        // Simpan pengajuan surat ke tabel
         $lahir = new Lahir();
-        $lahir->ktp = $ktpFileName ?? null;
-        $lahir->kk = $kkFileName ?? null;
+        $lahir->user_id = auth()->user()->id;
+        $lahir->nama_pasien = $validatedData['nama_pasien'];
+        $lahir->no_rekam_medis = $validatedData['no_rekam_medis'];
+        $lahir->no_telp = $validatedData['no_telp'];
+        $lahir->ktp = $ktpPath;
+        $lahir->kk = $kkPath;
         $lahir->save();
 
-        return redirect('/home/lahir')->with('success', 'Selamat, Pengajuan Surat Keterangan Lahir Anda Berhasil Dikirim');
+        // Dapatkan surat dari database
+        $suratLahir = Surat::where('jenis_surat', 'KELAHIRAN')->first();
+        
+        if (!$suratLahir) {
+            // Tambahkan penanganan kesalahan jika surat tidak ditemukan
+            return redirect()->back()->with('error', 'Surat tidak ditemukan.');
+        }
+
+        // Simpan riwayat pengajuan surat ke dalam tabel "riwayats"
+        $riwayat = Riwayat::create([
+            'user_id' => auth()->user()->id,
+            'surat_id' => $suratLahir->id,
+            'lahir_id' => $lahir->id,
+            'jenis_surat' => 'KELAHIRAN',
+            'tanggal_pengajuan' =>  Carbon::now()->timezone('Asia/Jakarta')->toDateTimeString(),
+            'status' => 'pending',
+        ]);
+
+        return redirect('/riwayat')->with('success', 'Pengajuan surat kelarhiran berhasil dikirim.');
     }
 
     /**

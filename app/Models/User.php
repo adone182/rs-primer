@@ -48,11 +48,12 @@ class User extends Authenticatable
 
     public function riwayats()
     {
-        return $this->hasMany(Riwayat::class);
+        return $this->hasMany(Riwayat::class, 'user_id');
     }
 
     public function vaksins()
     {
-        return $this->hasMany(Vaksin::class);
+        return $this->hasMany(Vaksin::class, 'user_id');
     }
+
 }

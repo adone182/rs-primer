@@ -12,7 +12,7 @@ class Vaksin extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'nama_pasien', 'no_rekam_medis', 'no_telp', 'ktp', 'kk', 'skck',
+        'user_id', 'nama_pasien', 'no_rekam_medis', 'no_telp', 'ktp', 'kk',
     ];
 
     public function user()

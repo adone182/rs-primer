@@ -32,8 +32,8 @@ class VaksinController extends Controller
      */
     public function create()
 {
-    $suratVaksin = Surat::where('jenis_surat', 'COVID')->first();
-    return view('Surat.Vaksin.create', compact('suratVaksin'));
+    $suratLainnya = Surat::where('jenis_surat', 'LAINLAIN')->first();
+    return view('Surat.LAINNYA.create', compact('suratLainnya'));
 }
 
 /**
@@ -50,11 +50,11 @@ public function store(Request $request)
     ]);
 
     // Simpan file KTP, KK, dan SKCK yang diunggah
-    $ktpPath = $request->file('ktp')->store('surat_vaksin');
-    $kkPath = $request->file('kk')->store('surat_vaksin');
+    $ktpPath = $request->file('ktp')->store('surat_lainnya');
+    $kkPath = $request->file('kk')->store('surat_lainnya');
 
-    // Simpan pengajuan surat vaksin ke tabel "vaksins"
-    $vaksin = Vaksin::create([
+    // Simpan pengajuan surat ke tabel 
+    $lainnya = Vaksin::create([
         'user_id' => auth()->user()->id,
         'nama_pasien' => $validatedData['nama_pasien'],
         'no_rekam_medis' => $validatedData['no_rekam_medis'],
@@ -64,24 +64,24 @@ public function store(Request $request)
     ]);
 
     // Dapatkan surat vaksin dari database
-    $suratVaksin = Surat::where('jenis_surat', 'COVID')->first();
+    $suratLainnya = Surat::where('jenis_surat', 'LAINLAIN')->first();
     
-    if (!$suratVaksin) {
-        // Tambahkan penanganan kesalahan jika surat vaksin tidak ditemukan
-        return redirect()->back()->with('error', 'Surat vaksin tidak ditemukan.');
+    if (!$suratLainnya) {
+        // Tambahkan penanganan kesalahan jika surat tidak ditemukan
+        return redirect()->back()->with('error', 'Surat tidak ditemukan.');
     }
 
     // Simpan riwayat pengajuan surat ke dalam tabel "riwayats"
     $riwayat = Riwayat::create([
         'user_id' => auth()->user()->id,
-        'surat_id' => $suratVaksin->id,
-        'vaksin_id' => $vaksin->id,
-        'jenis_surat' => 'COVID',
+        'surat_id' => $suratLainnya->id,
+        'vaksin_id' => $lainnya->id,
+        'jenis_surat' => 'LAIN-LAIN',
         'tanggal_pengajuan' =>  Carbon::now()->timezone('Asia/Jakarta')->toDateTimeString(),
         'status' => 'pending',
     ]);
 
-    return redirect('/riwayat')->with('success', 'Pengajuan surat COVID berhasil dikirim.');
+    return redirect('/riwayat')->with('success', 'Pengajuan surat berhasil dikirim.');
 }
 
 

@@ -1,7 +1,13 @@
 <?php
 
 namespace App\Http\Controllers;
+use Carbon\Carbon;
+use Carbon\CarbonInterface;
+setlocale(LC_TIME, 'id_ID');
+Carbon::setLocale('id');
 
+use App\Models\Surat;
+use App\Models\Riwayat;
 use App\Models\Asuransi;
 use Illuminate\Http\Request;
 
@@ -15,9 +21,9 @@ class AsuransiController extends Controller
      */
     public function index()
     {
-        return view('Surat.Asuransi.index', [
-            'asuransis' => Asuransi::all()
-        ]);
+        // return view('Surat.Asuransi.index', [
+        //     'asuransis' => Asuransi::all()
+        // ]);
     }
 
     /**
@@ -25,7 +31,8 @@ class AsuransiController extends Controller
      */
     public function create()
     {
-         return view('Surat.Asuransi.create');
+         $suratAsuransi = Surat::where('jenis_surat', 'ASURANSI')->first();
+         return view('Surat.ASURANSI.create', compact('suratAsuransi'));
     }
 
     /**
@@ -33,29 +40,50 @@ class AsuransiController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validatedData = $request->validate([
+            'nama_pasien' => 'required|string',
+            'no_rekam_medis' => 'required|numeric|max:999999999999',
+            'no_telp' => 'required|numeric|max:999999999999',
             'surat_kuasa' => 'required|file|mimes:pdf|max:1024',
             'ktp' => 'required|file|mimes:pdf|max:1024',
             'kk' => 'required|file|mimes:pdf|max:1024',
         ]);
 
-        if ($request->hasFile('surat_kuasa') && $request->hasFile('ktp') && $request->hasFile('kk')) {
-            $kuasaFile = $request->file('surat_kuasa');
-            $ktpFile = $request->file('ktp');
-            $kkFile = $request->file('kk');
+        // Simpan file KTP, KK, dan SKCK yang diunggah
+        $kuasaPath = $request->file('surat_kuasa')->store('surat_asuransi');
+        $ktpPath = $request->file('ktp')->store('surat_asuransi');
+        $kkPath = $request->file('kk')->store('surat_asuransi');
 
-            $kuasaFileName = $kuasaFile->store('berkas-asurance');
-            $ktpFileName = $ktpFile->store('berkas-asurance');
-            $kkFileName = $kkFile->store('berkas-asurance');
-        }
-
+        // Simpan pengajuan surat ke tabel
         $asuransi = new Asuransi();
-        $asuransi->surat_kuasa = $kuasaFileName ?? null;
-        $asuransi->ktp = $ktpFileName ?? null;
-        $asuransi->kk = $kkFileName ?? null;
+        $asuransi->user_id = auth()->user()->id;
+        $asuransi->nama_pasien = $validatedData['nama_pasien'];
+        $asuransi->no_rekam_medis = $validatedData['no_rekam_medis'];
+        $asuransi->no_telp = $validatedData['no_telp'];
+        $asuransi->surat_kuasa = $kuasaPath;
+        $asuransi->ktp = $ktpPath;
+        $asuransi->kk = $kkPath;
         $asuransi->save();
 
-        return redirect('/home/asuransi')->with('success', 'Selamat, Pengajuan Surat Asuransi Anda Berhasil Dikirim');
+        // Dapatkan surat dari database
+        $suratAsuransi = Surat::where('jenis_surat', 'ASURANSI')->first();
+        
+        if (!$suratAsuransi) {
+            // Tambahkan penanganan kesalahan jika surat tidak ditemukan
+            return redirect()->back()->with('error', 'Surat tidak ditemukan.');
+        }
+
+        // Simpan riwayat pengajuan surat ke dalam tabel "riwayats"
+        $riwayat = Riwayat::create([
+            'user_id' => auth()->user()->id,
+            'surat_id' => $suratAsuransi->id,
+            'asuransi_id' => $asuransi->id,
+            'jenis_surat' => 'ASURANSI',
+            'tanggal_pengajuan' =>  Carbon::now()->timezone('Asia/Jakarta')->toDateTimeString(),
+            'status' => 'pending',
+        ]);
+
+        return redirect('/riwayat')->with('success', 'Pengajuan surat asuransi berhasil dikirim.');
     }
 
     /**

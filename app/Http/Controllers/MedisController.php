@@ -1,10 +1,16 @@
 <?php
 
 namespace App\Http\Controllers;
+use Carbon\Carbon;
+use Carbon\CarbonInterface;
+setlocale(LC_TIME, 'id_ID');
+Carbon::setLocale('id');
 
+use App\Models\Surat;
+use App\Models\Riwayat;
 use App\Models\Medis;
-use Illuminate\Http\Request;
 
+use Illuminate\Http\Request;
 use App\Http\Requests\StoreMedisRequest;
 use App\Http\Requests\UpdateMedisRequest;
 
@@ -15,9 +21,9 @@ class MedisController extends Controller
      */
     public function index()
     {
-        return view('Surat.Medis.index', [
-            'medisis' => Medis::all()
-        ]);
+        // return view('Surat.Medis.index', [
+        //     'medisis' => Medis::all()
+        // ]);
     }
 
     /**
@@ -25,33 +31,56 @@ class MedisController extends Controller
      */
     public function create()
     {
-         return view('Surat.Medis.create');
+         $suratMedis = Surat::where('jenis_surat', 'RESUMEMEDIS')->first();
+         return view('Surat.MEDIS.create', compact('suratMedis'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreMedisRequest $request)
+    public function store(Request $request)
     {
-        $request->validate([
+        $validatedData = $request->validate([
+            'nama_pasien' => 'required|string',
+            'no_rekam_medis' => 'required|numeric|max:999999999999',
+            'no_telp' => 'required|numeric|max:999999999999',
             'ktp' => 'required|file|mimes:pdf|max:1024',
             'kk' => 'required|file|mimes:pdf|max:1024',
         ]);
 
-        if ($request->hasFile('ktp') && $request->hasFile('kk')) {
-            $ktpFile = $request->file('ktp');
-            $kkFile = $request->file('kk');
+        // Simpan file KTP, KK, dan SKCK yang diunggah
+        $ktpPath = $request->file('ktp')->store('surat_medis');
+        $kkPath = $request->file('kk')->store('surat_medis');
 
-            $ktpFileName = $ktpFile->store('berkas-medis');
-            $kkFileName = $kkFile->store('berkas-medis');
-        }
-
+        // Simpan pengajuan surat ke tabel
         $medis = new Medis();
-        $medis->ktp = $ktpFileName ?? null;
-        $medis->kk = $kkFileName ?? null;
+        $medis->user_id = auth()->user()->id;
+        $medis->nama_pasien = $validatedData['nama_pasien'];
+        $medis->no_rekam_medis = $validatedData['no_rekam_medis'];
+        $medis->no_telp = $validatedData['no_telp'];
+        $medis->ktp = $ktpPath;
+        $medis->kk = $kkPath;
         $medis->save();
 
-        return redirect('/home/medis')->with('success', 'Selamat, Pengajuan Surat Resume Medis Anda Berhasil Dikirim');
+        // Dapatkan surat dari database
+        $suratMedis = Surat::where('jenis_surat', 'RESUMEMEDIS')->first();
+        
+        if (!$suratMedis) {
+            // Tambahkan penanganan kesalahan jika surat tidak ditemukan
+            return redirect()->back()->with('error', 'Surat tidak ditemukan.');
+        }
+
+        // Simpan riwayat pengajuan surat ke dalam tabel "riwayats"
+        $riwayat = Riwayat::create([
+            'user_id' => auth()->user()->id,
+            'surat_id' => $suratMedis->id,
+            'medis_id' => $medis->id,
+            'jenis_surat' => 'RESUMEMEDIS',
+            'tanggal_pengajuan' =>  Carbon::now()->timezone('Asia/Jakarta')->toDateTimeString(),
+            'status' => 'pending',
+        ]);
+
+        return redirect('/riwayat')->with('success', 'Pengajuan surat resume medis berhasil dikirim.');
     }
 
     /**
