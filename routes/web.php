@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
@@ -46,22 +47,29 @@ Route::get('/', function () {
 });
 
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('/home', [HomeController::class, 'home'])->name('home');
-});
+// Route::middleware(['auth'])->group(function () {
+//     Route::get('/home', [HomeController::class, 'home'])->name('home');
+// });
 
 // Route::group(['middleware' => 'auth'], function () {
 //     Route::get('/notifikasi', [NotifikasiController::class, 'index'])->name('notifikasi.index');
 //     Route::get('/notifikasi/{id}', [NotifikasiController::class, 'show'])->name('notifikasi.show');
 // });
 
-Route::get('/pesan', function () {
-    // Mengambil pesan yang tersimpan dalam sesi untuk pengguna saat ini
-    $userId = Auth::id();
-    $pesan = session()->get('pesan.' . $userId, []);
+// Route::get('/pesan', function () {
+//     // Mengambil pesan yang tersimpan dalam sesi untuk pengguna saat ini
+//     $userId = Auth::id();
+//     $pesan = session()->get('pesan.' . $userId, []);
 
-    return view('SURAT.RIWAYAT.pesan', compact('pesan'));
-})->name('pesan');
+//     return view('SURAT.RIWAYAT.pesan', compact('pesan'));
+// })->name('pesan');
+
+Route::resource('/pesan', NotifikasiController::class)->middleware('auth');
+
+// Route::get('/unread-notifications-count', function () {
+//     $unreadCount = User::find(Auth::id())->unreadNotifications()->count();
+//     return response()->json(['unreadCount' => $unreadCount]);
+// });
 
 Route::resource('/riwayat', RiwayatController::class)->middleware('auth');
 
@@ -86,3 +94,4 @@ require __DIR__.'/auth.php';
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+

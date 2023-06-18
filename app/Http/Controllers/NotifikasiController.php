@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use App\Events\NotifikasiDiterima;
 use App\Models\Notifikasi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,61 +15,56 @@ class NotifikasiController extends Controller
      */
     public function index()
     {
-         $notifikasis = Notifikasi::where('user_id', auth()->user()->id)->orderByDesc('created_at')->get();
+        $user = Auth::user();
+        $notifikasi = $user->unreadNotifications()->get();
+        $unreadCount = $notifikasi->count();
 
-         $notifikasi = Auth::user()->unreadNotifications;
-
-        // Tandai notifikasi sebagai "dibaca"
-        Auth::user()->unreadNotifications->markAsRead();
-
-        return view('notifikasi.index', compact('notifikasi'));
+        return view('Surat.RIWAYAT.pesan', compact('notifikasi', 'unreadCount'));
     }
-
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function showNotifications()
     {
-        //
+        $user = Auth::user();
+
+        // Menandai notifikasi-notifikasi yang belum dibaca sebagai telah dibaca
+        // $user->unreadNotifications->markAsRead();
+
+        // Logika lainnya untuk menampilkan tampilan notifikasi
+
+        $notifikasi = $user->notifications();
+
+        return view('Surat.RIWAYAT.pesan', compact('notifikasi', 'user'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function markAsRead(Request $request)
     {
-        //
+        $user = Auth::user();
+        $notifikasiId = $request->input('notifikasi_id');
+
+        $notifikasi = $user->notifications()->findOrFail($notifikasiId);
+        $notifikasi->markAsRead();
+
+        event(new NotifikasiDibaca($user));
+
+        return response()->json(['status' => 'success']);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Notifikasi $notifikasi)
+    public function unreadNotifications()
     {
-        //
+        $user = Auth::user();
+        return $user->unreadNotifications();
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Notifikasi $notifikasi)
+    public function kirimNotifikasi(Request $request)
     {
-        //
+        // Lakukan logika Anda untuk membuat notifikasi dan menghitung jumlah notifikasi yang belum dibaca
+        $unreadCount = 10; // Ganti dengan logika Anda
+        
+        event(new NotifikasiDiterima($unreadCount));
+
+        return response()->json(['status' => 'success']);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Notifikasi $notifikasi)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Notifikasi $notifikasi)
-    {
-        //
-    }
 }

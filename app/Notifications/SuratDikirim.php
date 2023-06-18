@@ -5,9 +5,10 @@ namespace App\Notifications;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Notification;
 
-class VaksinNotification extends Notification
+class SuratDikirim extends Notification
 {
     use Queueable;
 
@@ -26,19 +27,30 @@ class VaksinNotification extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['mail'];
+        return ['broadcast'];
     }
 
     /**
      * Get the mail representation of the notification.
      */
-    public function toMail(object $notifiable): MailMessage
+
+    public function toBroadcast($notifiable)
     {
-        return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+        return new BroadcastMessage([
+            'title' => 'Pengajuan Surat Dikirim',
+            'message' => 'Pengajuan surat Anda berhasil dikirim.',
+            'sender' => 'Sistem',
+        ]);
     }
+
+    // public function toMail(object $notifiable): MailMessage
+    // {
+    //     return (new MailMessage)
+    //                 ->subject('Pengajuan Surat Berhasil Dikirim')
+    //                 ->greeting('Halo!')
+    //                 ->line('Pengajuan Surat Anda telah berhasil dikirim.')
+    //                 ->line('Terima kasih telah menggunakan aplikasi kami!');
+    // }
 
     /**
      * Get the array representation of the notification.

@@ -2,8 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Surat;
 use Illuminate\Database\Seeder;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class SuratSeeder extends Seeder
 {
@@ -12,6 +13,6 @@ class SuratSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        
     }
 }

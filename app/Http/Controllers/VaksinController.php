@@ -8,9 +8,13 @@ Carbon::setLocale('id');
 
 
 use App\Models\Vaksin;
+use App\Models\Notifikasi;
+use App\Models\User;
+use App\Events\NotifikasiDiterima;
+
 use App\Models\Surat;
 use App\Models\Riwayat;
-
+use App\Notifications\SuratDikirim;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreVaksinRequest;
 use App\Http\Requests\UpdateVaksinRequest;
@@ -81,6 +85,21 @@ public function store(Request $request)
         'status' => 'pending',
     ]);
 
+    $notifikasi = Notifikasi::create([
+        'type' => 'App\Notifications\SuratDikirim',
+        'notifiable_id' => auth()->user()->id,
+        'notifiable_type' => 'App\Models\User',
+        // 'data' => [
+        //     'title' => 'Pengajuan Surat Dikirim',
+        //     'message' => 'Pengajuan surat Anda berhasil dikirim.',
+        //     'sender' => 'Sistem',
+        // ],
+        'message' => 'Pengajuan surat Anda berhasil dikirim.',
+        'user_id' => auth()->user()->id,
+    ]);
+
+    event(new NotifikasiDiterima(auth()->user()->unreadNotifications->count()));
+
     return redirect('/riwayat')->with('success', 'Pengajuan surat berhasil dikirim.');
 }
 
@@ -121,4 +140,7 @@ public function store(Request $request)
         Vaksin::destroy($vaksin->id);
         return redirect('/suratvaksin')->with('success', 'Selamat, Pengajuan Anda Berhasil Di Hapus');
     }
+
+ 
+
 }

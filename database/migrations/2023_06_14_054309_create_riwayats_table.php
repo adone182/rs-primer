@@ -25,7 +25,7 @@ return new class extends Migration
             $table->unsignedBigInteger('asuransi_id')->nullable();
             $table->string('jenis_surat');
             $table->timestamp('tanggal_pengajuan');
-            $table->enum('status', ['pending', 'diproses', 'selesai'])->default('pending');
+            $table->enum('status', ['PENDING', 'DIPROSES', 'SELESAI'])->default('PENDING');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');
